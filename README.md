@@ -162,4 +162,3 @@ Conflict Error Response (409 Conflict):
   Result: Current streak remains active (reflecting Day N-1 length). 
   If Day N passes without check-in, Current Streak resets to 0 at midnight.
 
-================================================================================
