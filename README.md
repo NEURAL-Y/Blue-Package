@@ -1,6 +1,4 @@
-================================================================================
-                    LOCAL-DAY HABIT TRACKER WITH STREAKS                        
-================================================================================
+# Tracer BEE
 
 A production-ready, full-stack Habit Tracker web application built with React, 
 TypeScript, Express, PostgreSQL, and Docker Compose. 
