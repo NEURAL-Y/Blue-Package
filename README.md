@@ -1,115 +1,50 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/NEURAL-Y/Blue-Package/main/public/Blue_package.png" alt="BluePackage" width="220"/>
+
 # BluePackage
 
-> A zero-configuration package and build workflow for C++.
+**A zero-configuration package and build workflow for C++.**
 
-BluePackage aims to make using C++ libraries feel simple.
+![Language](https://img.shields.io/badge/C%2B%2B-modern-blue?logo=cplusplus)
+![Status](https://img.shields.io/badge/status-early%20development-yellow)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contributing)
 
-```text
-+--------------------------------------------------+
-|                   BluePackage                    |
-|       C++ Package Management Made Simpler        |
-+--------------------------------------------------+
-```
+[The Problem](#the-problem) • [The Vision](#the-vision) • [How It Works](#how-it-works) • [Architecture](#architecture) • [Roadmap](#roadmap)
+
+</div>
+
+---
+
+BluePackage aims to make using C++ libraries feel simple: install a package, `#include` it, build and run — without hand-writing `CMakeLists.txt` entries, `find_package()` calls, include/library paths, linker flags, or platform-specific setup for every dependency.
 
 ## The Problem
 
-Using external libraries in C++ often requires manual configuration:
+Using an external library in C++ is often only the beginning. The project still has to know how to **find**, **compile**, and **link** it — every time, for every platform:
 
 ```text
-+------------------------------------------+
-|              C++ Development             |
-+------------------------------------------+
-|                                          |
-|  CMakeLists.txt                          |
-|  find_package()                          |
-|  target_link_libraries()                 |
-|  Include directories                     |
-|  Library paths                           |
-|  Compiler flags                          |
-|  Platform configuration                  |
-|                                          |
-+------------------------------------------+
+CMakeLists.txt · find_package() · target_link_libraries()
+include directories · library paths · compiler flags · platform configuration
 ```
-
-Installing a library is often only the beginning.
-
-The project still needs to know how to find, compile, and link it.
 
 ## The Vision
 
-Install a package:
-
-```text
+```bash
 blue install qt
 ```
-
-Use it directly:
 
 ```cpp
 #include <QApplication>
 #include <QWidget>
 ```
 
-Build and run:
-
-```text
+```bash
 blue run
 ```
 
-BluePackage handles dependency integration and build configuration automatically.
+BluePackage handles dependency integration and build configuration automatically — so a real project looks like this:
 
-## How It Works
-
-```text
-                  +-----------+
-                  | Developer |
-                  +-----+-----+
-                        |
-                        v
-              +-------------------+
-              | blue install qt   |
-              +---------+---------+
-                        |
-                        v
-              +-------------------+
-              |   BluePackage     |
-              +---------+---------+
-                        |
-          +-------------+-------------+
-          |             |             |
-          v             v             v
-    +----------+  +----------+  +-----------+
-    | Download |  | Resolve  |  | Detect    |
-    | Package  |  | Depends  |  | Platform  |
-    +----------+  +----------+  +-----------+
-          |             |             |
-          +-------------+-------------+
-                        |
-                        v
-              +-------------------+
-              | Configure Build   |
-              | Automatically     |
-              +---------+---------+
-                        |
-                        v
-              +-------------------+
-              | Write C++ Code    |
-              +---------+---------+
-                        |
-                        v
-              +-------------------+
-              |    blue run       |
-              +---------+---------+
-                        |
-                        v
-              +-------------------+
-              |    Executable     |
-              +-------------------+
-```
-
-## Example
-
-```text
+```bash
 blue init my-game
 cd my-game
 
@@ -119,235 +54,101 @@ blue install glad
 blue run
 ```
 
-The goal is to avoid manually managing:
+No manually managed `CMakeLists.txt`, include/library paths, linker configuration, compiler flags, or platform-specific setup.
+
+## How It Works
 
 ```text
-+----------------------------+
-| Manual Configuration       |
-+----------------------------+
-|                            |
-| CMakeLists.txt             |
-| Include paths              |
-| Library paths              |
-| Linker configuration       |
-| Compiler flags             |
-| Platform-specific setup    |
-|                            |
-+----------------------------+
+Developer
+    │
+    ▼
+blue install qt
+    │
+    ▼
+BluePackage
+    │
+    ├── Download package
+    ├── Resolve dependencies
+    └── Detect platform
+    │
+    ▼
+Configure build automatically
+    │
+    ▼
+Write C++ code → blue run → Executable
 ```
+
+**Everyday workflow:** `blue search` → `blue install` → write code → `blue build` → `blue run`
 
 ## Architecture
 
 ```text
 BluePackage
-|
-+-- CLI
-|   |
-|   +-- init
-|   +-- search
-|   +-- install
-|   +-- remove
-|   +-- build
-|   +-- run
-|
-+-- Package Manager
-|   |
-|   +-- Package Discovery
-|   +-- Version Management
-|   +-- Dependency Resolution
-|
-+-- Build Engine
-|   |
-|   +-- Compiler Detection
-|   +-- Include Management
-|   +-- Library Linking
-|   +-- Platform Configuration
-|
-+-- Package Registry
-    |
-    +-- Package Metadata
-    +-- Package Versions
-    +-- Dependencies
-    +-- Documentation
+├── CLI                  init · search · install · remove · build · run
+├── Package Manager      discovery · version management · dependency resolution
+├── Build Engine         compiler detection · include management · linking · platform config
+└── Package Registry     metadata · versions · dependencies · documentation
 ```
 
 ## Goals
 
-```text
-[+] Simple package installation
-[+] Automatic dependency integration
-[+] Automatic compiler detection
-[+] Automatic platform configuration
-[+] Minimal project configuration
-[+] Simple build workflow
-[+] Simple project execution
-[+] Modern C++ support
-```
+- Simple package installation
+- Automatic dependency integration
+- Automatic compiler & platform detection
+- Minimal project configuration
+- Simple build and run workflow
+- Modern C++ support
 
-## Workflow
+## Future: The Registry
 
 ```text
-                  +-------------+
-                  |    Search   |
-                  | blue search |
-                  +------+------+
-                         |
-                         v
-                  +-------------+
-                  |   Install   |
-                  | blue install|
-                  +------+------+
-                         |
-                         v
-                  +-------------+
-                  |    Write    |
-                  |  C++ Code   |
-                  +------+------+
-                         |
-                         v
-                  +-------------+
-                  |    Build    |
-                  | blue build  |
-                  +------+------+
-                         |
-                         v
-                  +-------------+
-                  |     Run     |
-                  |  blue run   |
-                  +-------------+
+Developer → BluePackage CLI → BluePackage Registry → Library A / B / C ...
 ```
 
-## Future Vision
-
-```text
-                     Developer
-                         |
-                         v
-              +---------------------+
-              |   BluePackage CLI   |
-              +----------+----------+
-                         |
-                         v
-              +---------------------+
-              | BluePackage Registry|
-              +----------+----------+
-                         |
-              +----------+----------+
-              |          |          |
-              v          v          v
-           Library    Library    Library
-              A          B          C
-```
-
-The future registry aims to allow developers to:
-
-```text
-[+] Search packages
-[+] Install packages
-[+] Publish packages
-[+] Manage versions
-[+] Resolve dependencies
-[+] Access documentation
-```
+The planned registry aims to let developers search, install, publish, and version packages, resolve dependencies, and access documentation — all through the CLI.
 
 ## Important Note
 
-BluePackage does not remove the fundamental requirements of C++ compilation.
+BluePackage doesn't remove the fundamental steps of C++ compilation — libraries still need to be downloaded, compiled, linked, and executed. The difference is **who does the configuring**:
 
-Libraries still need to be:
-
-```text
-Downloaded
-    |
-    v
-Compiled
-    |
-    v
-Linked
-    |
-    v
-Executed
-```
-
-The difference is:
-
-```text
-Traditional C++
-       |
-       v
-Developer configures everything manually
-
-
-BluePackage
-       |
-       v
-BluePackage manages configuration automatically
-```
+| | Traditional C++ | BluePackage |
+|---|---|---|
+| Configuration | Developer configures everything manually | BluePackage manages configuration automatically |
 
 ## Roadmap
 
-```text
-PHASE 1
-|
-+-- [ ] Project initialization
-+-- [ ] Package installation
-+-- [ ] Local package management
-+-- [ ] Package metadata
+**Phase 1 — Foundations**
+Project initialization · package installation · local package management · package metadata
 
+**Phase 2 — Build Automation**
+Compiler detection · automatic include paths & linking · `build` command · `run` command
 
-PHASE 2
-|
-+-- [ ] Compiler detection
-+-- [ ] Automatic include paths
-+-- [ ] Automatic library linking
-+-- [ ] Build command
-+-- [ ] Run command
+**Phase 3 — Registry**
+Package registry · search · publishing · version management · dependency resolution
 
-
-PHASE 3
-|
-+-- [ ] Package registry
-+-- [ ] Package search
-+-- [ ] Package publishing
-+-- [ ] Version management
-+-- [ ] Dependency resolution
-
-
-PHASE 4
-|
-+-- [ ] Windows support
-+-- [ ] Linux support
-+-- [ ] macOS support
-+-- [ ] Community registry
-+-- [ ] Extended build integration
-```
+**Phase 4 — Platform & Community**
+Windows / Linux / macOS support · community registry · extended build integration
 
 ## Status
 
-```text
-+-----------------------------------+
-|        EARLY DEVELOPMENT          |
-|                                   |
-|  BluePackage is currently a       |
-|  proposed C++ infrastructure      |
-|  project.                         |
-+-----------------------------------+
-```
+**Early development.** BluePackage is currently a proposed C++ infrastructure project — design and architecture are still taking shape, and interfaces described here are subject to change.
 
 ## Core Philosophy
 
-```text
-+----------------------------------------------+
-|                                              |
-|   Install a library.                         |
-|                                              |
-|   Use it immediately.                        |
-|                                              |
-|   Let the tooling handle the complexity.     |
-|                                              |
-+----------------------------------------------+
-```
+> Install a library. Use it immediately. Let the tooling handle the complexity.
 
-**BluePackage**
+## Contributing
 
-`C++ package management without unnecessary configuration friction.`
+Design discussion, prototyping, and early feedback are all welcome at this stage.
+
+1. Fork the repo and branch from `main`.
+2. Open an issue first for larger changes — the CLI and build-engine design are still settling.
+3. Open a PR describing the change and motivation.
+
+---
+
+<div align="center">
+
+**BluePackage** — *C++ package management without unnecessary configuration friction.*
+
+</div>
